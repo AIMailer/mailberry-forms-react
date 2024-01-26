@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Latest ECMAScript features
+    "module": "ESNext", // Use ES modules
+    "lib": ["DOM", "ESNext"], // Include DOM and latest ES features
+    "allowJs": true, // Allow JavaScript files to be compiled
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "esModuleInterop": true, // Enables compatibility with Babel imports
+    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
+    "strict": true, // Enable all strict type-checking options
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
+    "moduleResolution": "node", // Module resolution strategy
+    "resolveJsonModule": true, // Include modules imported with '.json' extension
+    "isolatedModules": true, // Ensures each file can be safely transpiled without relying on other imports
+    "jsx": "react", // Support JSX in .tsx files: "react", "react-jsx" etc.
+    "baseUrl": "./", // Base directory to resolve non-relative module names
+    "outDir": "./dist", // Output directory for compiled files
+    "declaration": true, // Generates corresponding '.d.ts' file
+    "sourceMap": true // Generates corresponding '.map' file
+  },
+  "include": ["src"], // Compile all files in the src directory
+  "exclude": ["node_modules", "dist"] // Exclude these directories from compilation
+}
