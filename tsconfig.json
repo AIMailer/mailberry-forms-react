@@ -1,24 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES5", // Latest ECMAScript features
-    "module": "CommonJS", // Use ES modules
-    "lib": ["DOM", "ESNext"], // Include DOM and latest ES features
+    "target": "ES6",
+    "module": "ESNext",
+    "lib": ["DOM", "ES2015"], // Include DOM and latest ES features
     "allowJs": true, // Allow JavaScript files to be compiled
     "esModuleInterop": true, // Enables compatibility with Babel imports
     "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
     "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
-    "moduleResolution": "node", // Module resolution strategy
+    "moduleResolution": "Bundler", // Module resolution strategy
     "resolveJsonModule": true, // Include modules imported with '.json' extension
     "isolatedModules": true, // Ensures each file can be safely transpiled without relying on other imports
-    "jsx": "react", // Support JSX in .tsx files: "react", "react-jsx" etc.
+    "jsx": "react-jsx",
     "baseUrl": "./", // Base directory to resolve non-relative module names
     "outDir": "./dist", // Output directory for compiled files
     "declaration": true, // Generates corresponding '.d.ts' file
     "sourceMap": true, // Generates corresponding '.map' file
     "removeComments": true, // Do not emit comments to output
     "skipLibCheck": true,
-    "strict": false
+    "stripInternal": true,
+    "resolvePackageJsonExports": true,
+    "strict": false, // Enable all strict type-checking options
   },
-  "include": ["src"], // Compile all files in the src directory
+  "include": [
+    // compile all files with typescript extensions inside src directory
+    "src/**/*.ts",
+    "src/**/*.tsx",
+  ],
   "exclude": ["node_modules", "dist"] // Exclude these directories from compilation
 }
