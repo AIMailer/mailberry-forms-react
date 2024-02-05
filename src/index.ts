@@ -1,1 +1,1 @@
-export { default as MailberryForm } from './components/MailberryForm';
+export * from './components';
