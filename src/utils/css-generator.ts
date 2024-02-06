@@ -1,6 +1,6 @@
-import { CSSProps } from "../types"
+import { MailberryFormCSSProps } from "../types"
 
-export const css = function({ headStyle, labelStyle, btnStyle, mainStyle, descriptionThanksMessageAndSignStyle }: CSSProps){
+export const css = function({ headStyle, labelStyle, btnStyle, mainStyle, descriptionThanksMessageAndSignStyle }: MailberryFormCSSProps){
   return `
 .MBheading {
   margin-top: 20px;

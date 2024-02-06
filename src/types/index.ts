@@ -5,12 +5,12 @@ export type FieldType = {
   value: string;
 }
 
-export type Style = {
+export type MailberryStyle = {
   pageColor?: string;
   formColor?: string;
 }
 
-export type CSSProps = {
+export type MailberryFormCSSProps = {
   headStyle: {
     fontSize: number;
     fontFamily: string;
@@ -27,7 +27,7 @@ export type CSSProps = {
     color: string;
     backgroundColor: string;
   };
-  mainStyle: Style;
+  mainStyle: MailberryStyle;
   descriptionThanksMessageAndSignStyle: {
     fontSize: number;
     fontFamily: string;
