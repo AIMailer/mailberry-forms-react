@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { FormContext } from "./";
+import { FormContext } from "../";
 
 type MailberrySnippetProps = {
   href: string;

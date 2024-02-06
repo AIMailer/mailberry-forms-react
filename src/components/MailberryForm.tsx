@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { css } from 'src/utils/css-generator';
+import { CSSProps, FieldType, FormPopupOptions, FormatOptions, formFormat } from '../types';
+import { css } from '../utils/css-generator';
 import { MailberryFormPopup, MailberryFormSnippet } from './';
 
 export type ContextProps = {
@@ -15,36 +16,21 @@ export type ContextProps = {
   showThanksMessage: boolean;
 }
 
-export const FormContext = createContext<ContextProps | null>(null);
+export const FormContext = createContext({} as ContextProps);
 
 const API_FORM_URL = 'https://y4xtgbmdcf.execute-api.us-west-1.amazonaws.com/production/public'
-
-enum FORMAT {
-  snippet = 'snippet',
-  popup = 'popup'
-}
 
 type MailberryFormProps = {
   formId: string;
   style: CSSProps;
-  signature?: boolean; // Opcional, con valor por defecto true
+  signature?: boolean;
   thanksMessage: string;
-  format: FORMAT; // Usando el enum FORMAT
+  format: FormatOptions;
+  showAt?: FormPopupOptions;
   children: React.ReactNode;
 };
 
-interface MailberryFormComponent extends React.FC<MailberryFormProps> {
-  Header: React.FC<{ children: React.ReactNode }>;
-  Description: React.FC<{ children: React.ReactNode }>;
-  EmailInput: React.FC<MailberryInputProps>;
-  TextInput: React.FC<MailberryInputProps>;
-  NumberInput: React.FC<MailberryInputProps>;
-  DateInput: React.FC<MailberryInputProps>;
-  Submit: React.FC<{ text: string }>;
-  ThanksMessage: React.FC<{ children: React.ReactNode }>;
-}
-
-export const MailberryForm: MailberryFormComponent = ({ formId, style, signature = true, thanksMessage, format, children }: MailberryFormProps) => {
+const MailberryFormRoot: React.FC<MailberryFormProps> = ({ formId, style, signature = true, thanksMessage, format, showAt = 'IMMEDIATELY', children }) => {
   const href = `${API_FORM_URL}/${formId}`;
 
   const [fields, setFields] = useState<FieldType[]>([]);
@@ -133,13 +119,13 @@ export const MailberryForm: MailberryFormComponent = ({ formId, style, signature
   return (
     <FormContext.Provider value={{ fields, setFields, emptyFields, invalidEmail, isSubmitted, isSubmitting, setIsSubmitted, setIsSubmitting, showErrorMessage, showThanksMessage }}>
       {
-        format === FORMAT.popup ?  <MailberryFormPopup href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} children={children} /> : <MailberryFormSnippet href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} children={children} />
+        format === formFormat.POPUP ?  <MailberryFormPopup href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} formId={formId} children={children} showAt={showAt} /> : <MailberryFormSnippet href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} children={children} />
       }
     </FormContext.Provider>
   );
 };
 
-const useFormField = (label: string, type: React.HTMLInputTypeAttribute, required: boolean = false) => {
+const useFormField = (label: string, type: React.HTMLInputTypeAttribute, required: boolean = false): React.ReactNode => {
   const { fields, setFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,21 +164,24 @@ export type MailberryInputProps = {
   required?: boolean;
 }
 
-// Input components
-MailberryForm.EmailInput = ({ label, required }: MailberryInputProps) => useFormField(label, 'email', required);
-MailberryForm.TextInput = ({ label, required }: MailberryInputProps) => useFormField(label, 'text', required);
-MailberryForm.NumberInput = ({ label, required }: MailberryInputProps) => useFormField(label, 'number', required);
-MailberryForm.DateInput = ({ label, required }: MailberryInputProps) => useFormField(label, 'date', required);
+const MailberryEmailInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'email', required);
+const MailberryTextInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'text', required);
+const MailberryNumberInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'number', required);
+const MailberryDateInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'date', required);
 
-MailberryForm.Header = ({ children }: { children: React.ReactNode }) => (<>{children}</>);
-MailberryForm.Description = ({ children }: { children: React.ReactNode }) => (
+type MailberryNode = {
+  children: React.ReactNode;
+}
+
+const MailberryHeader: React.FC<MailberryNode> = ({ children }) => (<>{children}</>);
+const MailberryDescription: React.FC<MailberryNode> = ({ children }) => (
   <div className='MBdescription'>
     {children}
     <hr className='MBdivider' />
   </div>
 );
 
-MailberryForm.Submit = ({ text }: { text: string }) => {
+const MailberrySubmit: React.FC<{ text: string }> = ({ text }) => {
   const { isSubmitting } = useContext(FormContext);
 
   return (
@@ -200,6 +189,18 @@ MailberryForm.Submit = ({ text }: { text: string }) => {
       <button className='MBbtn' type="submit" disabled={isSubmitting}>{text}</button>
     </div>
   )
-}
+};
 
-MailberryForm.ThanksMessage = ({ children }: { children: React.ReactNode }) => (<>{children}</>);
+const MailberryThanksMessage: React.FC<MailberryNode> = ({ children }) => (<>{children}</>);
+
+export const MailberryForm = {
+  Root: MailberryFormRoot,
+  Header: MailberryHeader,
+  Description: MailberryDescription,
+  EmailInput: MailberryEmailInput,
+  TextInput: MailberryTextInput,
+  NumberInput: MailberryNumberInput,
+  DateInput: MailberryDateInput,
+  Submit: MailberrySubmit,
+  ThanksMessage: MailberryThanksMessage,
+};
