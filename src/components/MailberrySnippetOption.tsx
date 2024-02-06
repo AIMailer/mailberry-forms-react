@@ -32,15 +32,6 @@ export const MailberryFormSnippet: React.FC<MailberrySnippetProps> = ({ href, si
       {
         isSubmitting || !isSubmitted && (
           <form onSubmit={handleSubmit} className='MBform-wrapper'>
-            {
-              (invalidEmail || emptyFields) && (
-                <ul style={{color: "red", fontSize: "14px", fontFamily: "Arial", "paddingLeft": 0}}>
-                  {invalidEmail && <li style={{ listStyle: 'none' }}>Please enter a valid email address</li>}
-                  {emptyFields && <li style={{ listStyle: 'none' }}>Please fill in all required fields</li>}
-                </ul>
-              )
-            }
-
             {children}
             {
               signature && (

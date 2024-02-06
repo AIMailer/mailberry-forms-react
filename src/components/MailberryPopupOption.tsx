@@ -108,14 +108,6 @@ export const MailberryFormPopup: React.FC<MailberryFormPopupProps> = ({ href, si
             isSubmitting || !isSubmitted && (
               <form onSubmit={handleSubmit} className='MBform-wrapper' style={{ position: 'relative' }}>
                 <p className='MBclose-btn' onClick={() => handleDismissOverlay()}>X</p>
-                {
-                  (invalidEmail || emptyFields) && (
-                    <ul style={{color: "red", fontSize: "14px", fontFamily: "Arial", "paddingLeft": 0}}>
-                      {invalidEmail && <li style={{ listStyle: 'none' }}>Please enter a valid email address</li>}
-                      {emptyFields && <li style={{ listStyle: 'none' }}>Please fill in all required fields</li>}
-                    </ul>
-                  )
-                }
                 {children}
                 {
                   signature && (

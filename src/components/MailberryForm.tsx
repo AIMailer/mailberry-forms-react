@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { CSSProps, FieldType, FormPopupOptions, FormatOptions, formFormat } from '../types';
+import { FieldType, FormPopupOptions, FormatOptions, MailberryFormCSSProps, formFormat } from '../types';
 import { css } from '../utils/css-generator';
 import { MailberryFormPopup, MailberryFormSnippet } from './';
 
@@ -22,7 +22,7 @@ const API_FORM_URL = 'https://y4xtgbmdcf.execute-api.us-west-1.amazonaws.com/pro
 
 type MailberryFormProps = {
   formId: string;
-  style: CSSProps;
+  formStyle: MailberryFormCSSProps;
   signature?: boolean;
   thanksMessage: string;
   format: FormatOptions;
@@ -30,7 +30,7 @@ type MailberryFormProps = {
   children: React.ReactNode;
 };
 
-const MailberryFormRoot: React.FC<MailberryFormProps> = ({ formId, style, signature = true, thanksMessage, format, showAt = 'IMMEDIATELY', children }) => {
+const MailberryFormRoot: React.FC<MailberryFormProps> = ({ formId, formStyle, signature = true, thanksMessage, format, showAt = 'IMMEDIATELY', children }) => {
   const href = `${API_FORM_URL}/${formId}`;
 
   const [fields, setFields] = useState<FieldType[]>([]);
@@ -45,7 +45,7 @@ const MailberryFormRoot: React.FC<MailberryFormProps> = ({ formId, style, signat
     if(document.getElementById('mailberry-form-styles')) return
 
     var styleTag = document.createElement('style');
-    styleTag.innerHTML = css(style);
+    styleTag.innerHTML = css(formStyle);
     styleTag.setAttribute('id', 'mailberry-form-styles');
     document.getElementsByTagName('head')[0].appendChild(styleTag);
   }, [])
@@ -68,7 +68,6 @@ const MailberryFormRoot: React.FC<MailberryFormProps> = ({ formId, style, signat
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
 
     setInvalidEmail(false);
     setEmptyFields(false);
@@ -126,7 +125,7 @@ const MailberryFormRoot: React.FC<MailberryFormProps> = ({ formId, style, signat
 };
 
 const FormField = (label: string, type: React.HTMLInputTypeAttribute, required: boolean = false): React.ReactNode => {
-  const { fields, setFields } = useContext(FormContext);
+  const { fields, setFields, invalidEmail, emptyFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFields(fields.map(field => field.label.toLowerCase() === label.toLowerCase() ? { ...field, value: e.target.value } : field));
@@ -155,6 +154,8 @@ const FormField = (label: string, type: React.HTMLInputTypeAttribute, required: 
         autoComplete='off'
         required={required}
       />
+      { invalidEmail && type === 'email' && <p style={{color: "red", fontSize: "14px", fontFamily: "Arial", paddingLeft: 0, marginTop: 0, marginBottom: 4}}>Please enter a valid email address</p> }
+      { emptyFields && required && <p style={{color: "red", fontSize: "14px", fontFamily: "Arial", paddingLeft: 0, marginTop: 0, marginBottom: 4}}>Please fill in all required fields</p> }
     </div>
   );
 };
@@ -173,12 +174,10 @@ type MailberryNode = {
   children: React.ReactNode;
 }
 
-const MailberryHeader: React.FC<MailberryNode> = ({ children }) => (<>{children}</>);
 const MailberryDescription: React.FC<MailberryNode> = ({ children }) => (
-  <div className='MBdescription'>
+  <>
     {children}
-    <hr className='MBdivider' />
-  </div>
+  </>
 );
 
 const MailberrySubmit: React.FC<{ text: string }> = ({ text }) => {
@@ -195,7 +194,6 @@ const MailberryThanksMessage: React.FC<MailberryNode> = ({ children }) => (<>{ch
 
 export const MailberryForm = {
   Root: MailberryFormRoot,
-  Header: MailberryHeader,
   Description: MailberryDescription,
   EmailInput: MailberryEmailInput,
   TextInput: MailberryTextInput,
