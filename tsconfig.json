@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "commonjs",
     "lib": ["DOM", "ESNext"],
     "allowJs": true, // Allow JavaScript files to be compiled
     "rootDir": "./src",
@@ -9,17 +9,15 @@
     "esModuleInterop": true, // Enables compatibility with Babel imports
     "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
     "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
-    "moduleResolution": "Bundler", // Module resolution strategy
     "resolveJsonModule": true, // Include modules imported with '.json' extension
     "isolatedModules": true, // Ensures each file can be safely transpiled without relying on other imports
     "jsx": "react-jsx",
     "outDir": "./dist", // Output directory for compiled files
     "declaration": true, // Generates corresponding '.d.ts' file
     "sourceMap": true, // Generates corresponding '.map' file
-    "removeComments": true, // Do not emit comments to output
+    "removeComments": false, // Do not emit comments to output
     "skipLibCheck": true,
     "stripInternal": true,
-    "resolvePackageJsonExports": true,
   },
   "include": [
     // compile all files with typescript extensions inside src directory

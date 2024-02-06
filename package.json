@@ -2,11 +2,9 @@
   "name": "mailberry-forms-react",
   "version": "0.1.0",
   "description": "Mailberry Forms components to be used on a ReactJS/NextJS project",
-  "main": "dist/MailberryForm.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -29,9 +27,15 @@
   "devDependencies": {
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.3.3",
-    "webpack": "^5.90.0",
-    "webpack-cli": "^5.1.4"
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   }
 }
