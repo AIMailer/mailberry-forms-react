@@ -92,7 +92,7 @@ export const MailberryFormPopup: React.FC<MailberryFormPopupProps> = ({ href, si
   }, []);
 
   return (
-    <div className="MBoverlay" style={{ zIndex: 9999, cursor: 'pointer' }}>
+    <div className="MBoverlay" style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer' }}>
       <div ref={formContainerRef} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', cursor: 'auto' }}>
         <div className='MBform-container' style={{ animation: 'MBopacity-in 0.4s linear' }}>
           {/* Spinner */}
@@ -103,11 +103,11 @@ export const MailberryFormPopup: React.FC<MailberryFormPopupProps> = ({ href, si
               </div>
             )
           }
-          {children}
           {/* Form */}
           {
             isSubmitting || !isSubmitted && (
-              <form onSubmit={handleSubmit} className='MBform-wrapper'>
+              <form onSubmit={handleSubmit} className='MBform-wrapper' style={{ position: 'relative' }}>
+                <p className='MBclose-btn' onClick={() => handleDismissOverlay()}>X</p>
                 {
                   (invalidEmail || emptyFields) && (
                     <ul style={{color: "red", fontSize: "14px", fontFamily: "Arial", "paddingLeft": 0}}>
