@@ -125,7 +125,7 @@ const MailberryFormRoot: React.FC<MailberryFormProps> = ({ formId, style, signat
   );
 };
 
-const useFormField = (label: string, type: React.HTMLInputTypeAttribute, required: boolean = false): React.ReactNode => {
+const FormField = (label: string, type: React.HTMLInputTypeAttribute, required: boolean = false): React.ReactNode => {
   const { fields, setFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,10 +164,10 @@ export type MailberryInputProps = {
   required?: boolean;
 }
 
-const MailberryEmailInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'email', required);
-const MailberryTextInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'text', required);
-const MailberryNumberInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'number', required);
-const MailberryDateInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => useFormField(label, 'date', required);
+const MailberryEmailInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => FormField(label, 'email', required);
+const MailberryTextInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => FormField(label, 'text', required);
+const MailberryNumberInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => FormField(label, 'number', required);
+const MailberryDateInput: React.FC<MailberryInputProps> = ({ label, required }: MailberryInputProps) => FormField(label, 'date', required);
 
 type MailberryNode = {
   children: React.ReactNode;
