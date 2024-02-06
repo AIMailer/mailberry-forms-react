@@ -36,15 +36,15 @@ export type CSSProps = {
 }
 
 export const formPopupOptions = {
-  IMMEDIATELY: "immediately",
-  AFTER_10_SECONDS: "after-10-seconds",
-  AFTER_30_SECONDS: "after-30-seconds",
-  AT_30_PERCENT_OF_PAGEVIEW: "at-30-percent-of-pageview"
+  IMMEDIATELY: "IMMEDIATELY",
+  AFTER_10_SECONDS: "AFTER_10_SECONDS",
+  AFTER_30_SECONDS: "AFTER_30_SECONDS",
+  AT_30_PERCENT_OF_PAGEVIEW: "AT_30_PERCENT_OF_PAGEVIEW"
 }
 
 export const formFormat = {
-  SNIPPET: 'snippet',
-  POPUP: 'popup',
+  SNIPPET: 'SNIPPET',
+  POPUP: 'POPUP',
 }
 
 export type FormatOptions = keyof typeof formFormat;
