@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'MailberryForm.js',
-    libraryTarget: '',
+    libraryTarget: 'umd',
     globalObject: 'this',
   },
   resolve: {
