@@ -1,3 +1,5 @@
+import { CSSProps } from "../types"
+
 export const css = function({ headStyle, labelStyle, btnStyle, mainStyle, descriptionThanksMessageAndSignStyle }: CSSProps){
   return `
 .MBheading {
