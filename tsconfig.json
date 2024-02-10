@@ -1,28 +1,40 @@
+// Read: https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html#im-writing-a-library
+
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "lib": ["DOM", "ESNext"],
-    "allowJs": true, // Allow JavaScript files to be compiled
-    "rootDir": "./src",
-    "strict": true,
-    "noImplicitReturns": true,
-    "esModuleInterop": true, // Enables compatibility with Babel imports
-    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
-    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
-    "resolveJsonModule": true, // Include modules imported with '.json' extension
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "outDir": "dist",
+
+    // Bundler mode 
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
     "isolatedModules": true, // Ensures each file can be safely transpiled without relying on other imports
     "jsx": "react-jsx",
-    "outDir": "./dist", // Output directory for compiled files
+    "allowSyntheticDefaultImports": true,
+
+    // Linting
+    "strict": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
     "declaration": true, // Generates corresponding '.d.ts' file
-    "sourceMap": true, // Generates corresponding '.map' file
-    "removeComments": false, // Do not emit comments to output
-    "skipLibCheck": true,
-    "stripInternal": true,
+
+    // "esModuleInterop": true, // Enables compatibility with Babel imports
+    // "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
+    // "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
+    // "outDir": "./dist", // Output directory for compiled files
+    // "sourceMap": true, // Generates corresponding '.map' file
+    // "removeComments": false, // Do not emit comments to output
+    // "stripInternal": true,
+    // "noPropertyAccessFromIndexSignature": true,
   },
   "include": [
     // compile all files with typescript extensions inside src directory
     "src/**/*.ts",
     "src/**/*.tsx",
   ],
-  "exclude": ["node_modules", "dist"] // Exclude these directories from compilation
+  "exclude": ["node_modules"] // Exclude these directories from compilation
 }
