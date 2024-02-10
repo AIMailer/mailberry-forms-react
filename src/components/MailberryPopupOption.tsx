@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormPopupOptions, formPopupOptions } from "../types";
 import { getSubscriptionFromLocalStorage } from "../utils/localStorage";
-import { FormContext } from "./";
+import { FormContext } from "./MailberryForm";
 
 type MailberryFormPopupProps = {
   href: string;
@@ -13,8 +13,8 @@ type MailberryFormPopupProps = {
   children: React.ReactNode;
 }
 
-export const MailberryFormPopup: React.FC<MailberryFormPopupProps> = ({ href, signature, thanksMessage, handleSubmit, showAt, formId, children }) => {
-  const { isSubmitted, isSubmitting, emptyFields, invalidEmail, showErrorMessage, showThanksMessage } = useContext(FormContext);
+const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, showAt, formId, children }: MailberryFormPopupProps) => {
+  const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
   const [showOverlay, setShowOverlay] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
@@ -140,3 +140,5 @@ export const MailberryFormPopup: React.FC<MailberryFormPopupProps> = ({ href, si
     </div>
   )
 }
+
+export default MailberryFormPopup;

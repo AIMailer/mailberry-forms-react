@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { FormContext } from "../";
+import { FormContext } from "./MailberryForm";
 
 type MailberrySnippetProps = {
   href: string;
@@ -9,8 +9,8 @@ type MailberrySnippetProps = {
   children: React.ReactNode;
 }
 
-export const MailberryFormSnippet: React.FC<MailberrySnippetProps> = ({ href, signature, thanksMessage, handleSubmit, children }) => {
-  const { isSubmitted, isSubmitting, emptyFields, invalidEmail, showErrorMessage, showThanksMessage } = useContext(FormContext);
+const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, children }: MailberrySnippetProps) => {
+  const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
 
   // Every time this component is rendered, we send a request to register that the form was viewed
   useEffect(() => {
@@ -64,3 +64,5 @@ export const MailberryFormSnippet: React.FC<MailberrySnippetProps> = ({ href, si
     </div>
   )
 }
+
+export default MailberryFormSnippet;
