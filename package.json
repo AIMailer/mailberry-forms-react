@@ -2,7 +2,12 @@
   "name": "mailberry-forms-react",
   "version": "0.1.0",
   "description": "Mailberry Forms components to be used on a ReactJS/NextJS project",
-  "main": "dist/index.js",
+  "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc"
   },
@@ -22,20 +27,19 @@
   "homepage": "https://github.com/AIMailer/mailberry-forms-react#readme",
   "peerDependencies": {
     "react": ">=17.0.0 <19.0.0",
-    "react-dom": ">=17.0.0 <19.0.0"
+    "react-dom": ">=17.0.0 <19.0.0",
+    "@types/react": ">=17.0.0 <19.0.0",
+    "@types/react-dom": ">=17.0.0 <19.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.48",
-    "@types/react-dom": "^18.2.18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "typescript": "^5.3.3"
   },
-  "files": [
-    "dist"
-  ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   }
 }
