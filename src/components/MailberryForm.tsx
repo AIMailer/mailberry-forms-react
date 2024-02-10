@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { FieldType, FormPopupOptions, FormatOptions, MailberryFormCSSProps, formFormat } from '../types';
 import { css } from '../utils/css-generator';
 import MailberryFormFieldComponents from "./MailberryFormField";

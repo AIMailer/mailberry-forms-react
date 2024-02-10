@@ -1,3 +1,4 @@
+import React from 'react';
 import { useContext, useEffect, useRef } from "react";
 import { FormContext } from "./MailberryForm";
 
@@ -11,7 +12,7 @@ type MailberryFormFieldProps = {
   wrapperStyle?: React.CSSProperties;
 }
 
-const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrapperStyle }: MailberryFormFieldProps): React.ReactNode => {
+const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrapperStyle }: MailberryFormFieldProps): JSX.Element => {
   const { fields, setFields, invalidEmail, emptyFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +28,7 @@ const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrap
   }, []);
 
   return (
-    <div className={undefined} style={wrapperStyle}>
+    <div style={wrapperStyle}>
       <label htmlFor={`mailberry-${labelIdentifier}-${type}`} className='MBlabel' style={labelStyle}>
         {label}{required && '*'}
       </label>
