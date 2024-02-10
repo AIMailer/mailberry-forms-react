@@ -1,3 +1,1 @@
-export * from "./MailberryForm";
-export * from "./MailberryPopupOption";
-export * from "./MailberrySnippetOption"
+export { default as MailberryForm } from "./MailberryForm";
