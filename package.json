@@ -2,14 +2,17 @@
   "name": "mailberry-forms-react",
   "version": "0.1.0",
   "description": "Mailberry Forms components to be used on a ReactJS/NextJS project",
-  "type": "module",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "clean": "rm -rf dist",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs"
   },
   "repository": {
     "type": "git",
@@ -26,20 +29,14 @@
   },
   "homepage": "https://github.com/AIMailer/mailberry-forms-react#readme",
   "peerDependencies": {
-    "react": ">=17.0.0 <19.0.0",
-    "react-dom": ">=17.0.0 <19.0.0",
-    "@types/react": ">=17.0.0 <19.0.0",
-    "@types/react-dom": ">=17.0.0 <19.0.0"
+    "react": ">=17.0.0"
   },
   "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tslib": "^2.6.2",
     "typescript": "^5.3.3"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js"
-    },
-    "./package.json": "./package.json"
   }
 }
