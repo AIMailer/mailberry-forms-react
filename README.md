@@ -23,6 +23,7 @@ The MailberryForm component is the main component of the library. It has the fol
 2. **thanksMessage** is the message that will be shown after the form is submitted
 3. **format** is the format of the form, it can be 'SNIPPET' or 'POPUP'
 4. **formContainerStyles** is the style of the form container
+5. **showAt** is the time in seconds that the form will be shown after the page is loaded. If a value number is passed, the poup will be shown after percentage of the page is scrolled. Values allowed 0 - 1, where 0.5 represents 50% of the page scrolled.
 
 Note: 
 - MailberryForm format SNIPPET render a form within a div(div form container > form).
