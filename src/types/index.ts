@@ -39,7 +39,6 @@ export const formPopupOptions = {
   IMMEDIATELY: "IMMEDIATELY",
   AFTER_10_SECONDS: "AFTER_10_SECONDS",
   AFTER_30_SECONDS: "AFTER_30_SECONDS",
-  AT_30_PERCENT_OF_PAGEVIEW: "AT_30_PERCENT_OF_PAGEVIEW"
 }
 
 export const formFormat = {
@@ -48,4 +47,4 @@ export const formFormat = {
 }
 
 export type FormatOptions = keyof typeof formFormat;
-export type FormPopupOptions = keyof typeof formPopupOptions;
+export type FormPopupOptions = keyof typeof formPopupOptions | number;

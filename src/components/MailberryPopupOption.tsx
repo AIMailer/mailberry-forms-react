@@ -37,17 +37,14 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
   const formContainerRef = useRef<HTMLDivElement>(null);
 
   const checkScrollPosition = () => {
-    const percent = 0.3;
-    const scrollY = window.scrollY;
-    const fullHeight = document.documentElement.scrollHeight;
-    const windowHeight = window.innerHeight;
-    const thirtyPercentOfPageview = fullHeight * percent;
+    const scrollPosition = window.scrollY + window.innerHeight;
+    const totalHeight = document.body.scrollHeight;
+    const percentage = (scrollPosition / totalHeight) * 100;
 
-    if (scrollY + windowHeight >= thirtyPercentOfPageview) {
+    if (typeof showAt === 'number' && percentage >= showAt) {
       !showOverlay && setShowOverlay(true)
+      window.removeEventListener('scroll', checkScrollPosition);
     }
-
-    window.removeEventListener('scroll', checkScrollPosition);
     return
   };
 
@@ -56,7 +53,7 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
     const target = event.target as HTMLElement;
 
     if (formContainerRef.current && !formContainerRef.current.contains(target)) {
-      setShowOverlay(false);
+      handleDismissOverlay();
     }
   };
 
@@ -81,7 +78,7 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
 
   // Set popup option
   useEffect(() => {
-    if(showAt === formPopupOptions.AT_30_PERCENT_OF_PAGEVIEW){
+    if(typeof showAt === 'number'){
       window.addEventListener('scroll', checkScrollPosition);
 
       return
@@ -109,11 +106,11 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
     };
 
     return () => {
-      if(showAt === formPopupOptions.AT_30_PERCENT_OF_PAGEVIEW){
+      if(typeof showAt == 'number'){
         window.removeEventListener('scroll', checkScrollPosition);
       }
     }
-  }, [checkScrollPosition]);
+  }, [checkScrollPosition, showAt]);
 
   return (
     <div style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer', width: '100%', height: '100%', minWidth: '100%', minHeight: '100%', position: 'fixed', left: 0, top: 0, backgroundColor: 'rgba(0, 1, 5, 0.8)' }}>
