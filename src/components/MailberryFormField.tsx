@@ -12,6 +12,13 @@ type MailberryFormFieldProps = {
   wrapperStyle?: React.CSSProperties;
 }
 
+const defaultInputStyle: React.CSSProperties = {
+  padding: 11,
+  border: '1px solid #ccc',
+  borderRadius: 5,
+  marginBottom: 5,
+}
+
 const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrapperStyle }: MailberryFormFieldProps): JSX.Element => {
   const { fields, setFields, invalidEmail, emptyFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -35,13 +42,12 @@ const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrap
       <input 
         ref={inputRef}
         id={`mailberry-${labelIdentifier}-${type}`} 
-        className='MBinput'
         type={type}
         name={label} 
         onChange={handleChange} 
         autoComplete='off'
         required={required}
-        style={inputStyle}
+        style={{...defaultInputStyle, ...inputStyle}}
       />
       { invalidEmail && type === 'email' && <p style={{color: "red", fontSize: "14px", fontFamily: "Arial", paddingLeft: 0, marginTop: 0, marginBottom: 4}}>Please enter a valid email address</p> }
       { emptyFields && required && <p style={{color: "red", fontSize: "14px", fontFamily: "Arial", paddingLeft: 0, marginTop: 0, marginBottom: 4}}>Please fill in all required fields</p> }

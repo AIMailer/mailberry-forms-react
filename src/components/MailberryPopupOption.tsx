@@ -13,6 +13,15 @@ type MailberryFormPopupProps = {
   children: React.ReactNode;
 }
 
+const defaultCloseButtonStyle: React.CSSProperties = { 
+  margin: '20px 0',
+  position: 'absolute',
+  top: 0,
+  right: 25,
+  fontSize: 20,
+  cursor: 'pointer'
+}
+
 const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, showAt, formId, children }: MailberryFormPopupProps) => {
   const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -98,8 +107,8 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, show
           {/* Spinner */}
           {
             isSubmitting && (
-              <div className='MBform-wrapper MBspinner-wrapper' style={{ display: 'flex', justifyContent: 'center' }}>
-                <div className='MBspinner'></div>
+              <div style={{ width: 400, padding: '30px 30px 10px 30px', boxSizing: 'border-box', display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: 30 }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', border: '4px solid #ccc', borderTopColor: '#999999', animation: 'MBspin-animation 1s linear infinite' }} />
               </div>
             )
           }
@@ -107,11 +116,12 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, show
           {
             isSubmitting || !isSubmitted && (
               <form onSubmit={handleSubmit} className='MBform-wrapper' style={{ position: 'relative' }}>
-                <p className='MBclose-btn' onClick={() => handleDismissOverlay()}>X</p>
+                {/* Revisar descriptionThanksMessageAndSignStyle color */}
+                <p className='MBclose-btn' onClick={() => handleDismissOverlay()} style={{ margin: '20px 0', position: 'absolute', top: 0, right: 25, fontSize: 20, cursor: 'pointer' }}>X</p>
                 {children}
                 {
                   signature && (
-                    <div className='MBsignature-wrapper'>
+                    <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}>
                       <p className='MBpowered-by'>Powered by</p>
                       <a href={href} target='_blank' rel='noopener noreferrer'><p className='MBsignature'>MailBerry</p></a>
                     </div>
@@ -123,14 +133,14 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, show
           {/* Thank you message */}
           {
             showThanksMessage &&
-              <div className='MBform-wrapper MBthank-you-wrapper' style={{ display: 'block', paddingBottom: 30 }}>
+              <div className='MBform-wrapper' style={{ display: 'block', paddingBottom: 30 }}>
                 <p className='MBthank-you-message'>{thanksMessage}</p>
               </div>
           }
           {/* Error message */}
           {
             showErrorMessage && (
-              <div className='MBform-wrapper MBerror-wrapper' style={{ display: 'block' }}>
+              <div className='MBform-wrapper' style={{ display: 'block', paddingBottom: 20 }}>
                 <p className='MBerror-message'>Something went wrong.</p>
               </div>
             )

@@ -4,6 +4,7 @@ import { css } from '../utils/css-generator';
 import MailberryFormFieldComponents from "./MailberryFormField";
 import MailberryFormPopup from './MailberryPopupOption';
 import MailberryFormSnippet from './MailberrySnippetOption';
+import MailberrySubmit from './MailberrySubmit';
 
 type ContextProps = {
   fields: FieldType[];
@@ -145,22 +146,6 @@ type MailberryNode = {
 }
 
 const MailberryDescription: React.FC<MailberryNode> = ({ children }): React.ReactNode => (<>{children}</>);
-
-type MailberrySubmitProps = {
-  text: string;
-  buttonWrapperStyles?: React.CSSProperties;
-  buttonStyles?: React.CSSProperties;
-}
-
-const MailberrySubmit: React.FC<MailberrySubmitProps> = ({ text, buttonStyles = {}, buttonWrapperStyles = {} }) => {
-  const { isSubmitting } = useContext(FormContext);
-
-  return (
-    <div className='MBbtn-wrapper' style={buttonWrapperStyles}>
-      <button className='MBbtn' type="submit" disabled={isSubmitting} style={buttonStyles}>{text}</button>
-    </div>
-  )
-};
 
 const MailberryThanksMessage = ({ children }: MailberryNode): React.ReactNode => (<>{children}</>);
 
