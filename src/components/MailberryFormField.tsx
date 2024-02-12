@@ -19,6 +19,12 @@ const defaultInputStyle: React.CSSProperties = {
   marginBottom: 5,
 }
 
+const defaultWrapperStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 8
+}
+
 const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrapperStyle }: MailberryFormFieldProps): JSX.Element => {
   const { fields, setFields, invalidEmail, emptyFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -35,7 +41,7 @@ const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrap
   }, []);
 
   return (
-    <div style={wrapperStyle}>
+    <div style={{ ...defaultWrapperStyle, ...wrapperStyle }}>
       <label htmlFor={`mailberry-${labelIdentifier}-${type}`} className='MBlabel' style={labelStyle}>
         {label}{required && '*'}
       </label>
