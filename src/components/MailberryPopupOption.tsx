@@ -26,7 +26,9 @@ const defaultCloseButtonStyle: React.CSSProperties = {
 const defaultFormContainerStyles: React.CSSProperties = {
   width: 400,
   borderRadius: 12,
-  animation: 'MBopacity-in 0.4s linear'
+  animation: 'MBopacity-in 0.4s linear',
+  padding: 30,
+  paddingBottom: 10
 }
 
 const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyles, handleSubmit, showAt, formId, children }: MailberryFormPopupProps) => {
