@@ -10,6 +10,7 @@ type MailberryFormPopupProps = {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   showAt: FormPopupOptions;
   formId: string;
+  formContainerStyles: React.CSSProperties;
   children: React.ReactNode;
 }
 
@@ -22,7 +23,13 @@ const defaultCloseButtonStyle: React.CSSProperties = {
   cursor: 'pointer'
 }
 
-const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, showAt, formId, children }: MailberryFormPopupProps) => {
+const defaultFormContainerStyles: React.CSSProperties = {
+  width: 400,
+  borderRadius: 12,
+  animation: 'MBopacity-in 0.4s linear'
+}
+
+const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyles, handleSubmit, showAt, formId, children }: MailberryFormPopupProps) => {
   const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
   const [showOverlay, setShowOverlay] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
@@ -101,9 +108,9 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, show
   }, []);
 
   return (
-    <div className="MBoverlay" style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer' }}>
+    <div className="MBoverlay" style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer', width: '100%', height: '100%', minWidth: '100%', minHeight: '100%', position: 'fixed', left: 0, top: 0, backgroundColor: 'rgba(0, 1, 5, 0.8)' }}>
       <div ref={formContainerRef} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', cursor: 'auto' }}>
-        <div className='MBform-container' style={{ animation: 'MBopacity-in 0.4s linear' }}>
+        <div className='MBform-container' style={{ ...defaultFormContainerStyles, ...formContainerStyles }}>
           {/* Spinner */}
           {
             isSubmitting && (
@@ -115,15 +122,15 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, show
           {/* Form */}
           {
             isSubmitting || !isSubmitted && (
-              <form onSubmit={handleSubmit} className='MBform-wrapper' style={{ position: 'relative' }}>
+              <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
                 {/* Revisar descriptionThanksMessageAndSignStyle color */}
-                <p className='MBclose-btn' onClick={() => handleDismissOverlay()} style={{ margin: '20px 0', position: 'absolute', top: 0, right: 25, fontSize: 20, cursor: 'pointer' }}>X</p>
+                <p onClick={() => handleDismissOverlay()} style={{ ...defaultCloseButtonStyle }}>X</p>
                 {children}
                 {
                   signature && (
-                    <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}>
-                      <p className='MBpowered-by'>Powered by</p>
-                      <a href={href} target='_blank' rel='noopener noreferrer'><p className='MBsignature'>MailBerry</p></a>
+                    <div style={{ display: 'flex', marginTop: 20, justifyContent: 'center' }}>
+                      <p style={{ fontSize: 8, fontFamily: 'Arial, Helvetica, sans-serif' }}>Powered by</p>
+                      <a href={href} target='_blank' rel='noopener noreferrer'><p style={{ fontSize: 8, fontFamily: 'Arial, Helvetica, sans-serif', marginLeft: 2 }}>MailBerry</p></a>
                     </div>
                   )
                 }
@@ -133,15 +140,15 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, handleSubmit, show
           {/* Thank you message */}
           {
             showThanksMessage &&
-              <div className='MBform-wrapper' style={{ display: 'block', paddingBottom: 30 }}>
-                <p className='MBthank-you-message'>{thanksMessage}</p>
+              <div style={{ paddingBottom: 30 }}>
+                <p style={{ margin: 10, textAlign: 'center' }}>{thanksMessage}</p>
               </div>
           }
           {/* Error message */}
           {
             showErrorMessage && (
-              <div className='MBform-wrapper' style={{ display: 'block', paddingBottom: 20 }}>
-                <p className='MBerror-message'>Something went wrong.</p>
+              <div style={{ paddingBottom: 20 }}>
+                <p style={{ margin: 10, textAlign: 'center' }}>Something went wrong.</p>
               </div>
             )
           }

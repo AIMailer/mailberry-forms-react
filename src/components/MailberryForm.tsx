@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { FieldType, FormPopupOptions, FormatOptions, MailberryFormCSSProps, formFormat } from '../types';
-import { css } from '../utils/css-generator';
+import React, { createContext, useContext, useState } from 'react';
+import { FieldType, FormPopupOptions, FormatOptions, formFormat } from '../types';
 import MailberryFormFieldComponents from "./MailberryFormField";
 import MailberryFormPopup from './MailberryPopupOption';
 import MailberryFormSnippet from './MailberrySnippetOption';
@@ -25,11 +24,11 @@ const API_FORM_URL = 'https://backend.mailberry.ai/public'
 
 type MailberryFormProps = {
   formId: string;
-  formStyle?: MailberryFormCSSProps;
   signature?: boolean;
   thanksMessage: string;
   format: FormatOptions;
   showAt?: FormPopupOptions;
+  formContainerStyles?: React.CSSProperties;
   children: React.ReactNode | React.ReactNode[];
 };
 
@@ -44,7 +43,7 @@ interface MailberryFormComponents {
   ThanksMessage: typeof MailberryThanksMessage;
 }
 
-const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, formStyle, signature = true, thanksMessage, format, showAt = 'IMMEDIATELY', children }): React.ReactNode => {
+const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt = 'IMMEDIATELY', formContainerStyles = {}, children }): React.ReactNode => {
   const href = `${API_FORM_URL}/${formId}`;
 
   const [fields, setFields] = useState<FieldType[]>([]);
@@ -54,19 +53,6 @@ const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showThanksMessage, setShowThanksMessage] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-
-  useEffect(() => {
-    if(!formStyle) return
-
-    if(document.getElementById('mailberry-form-styles')) return
-    console.log({formStyle})
-
-    var styleTag = document.createElement('style');
-    styleTag.innerHTML = css(JSON.parse(JSON.stringify(formStyle)));
-    styleTag.setAttribute('id', 'mailberry-form-styles');
-    document.getElementsByTagName('head')[0].appendChild(styleTag);
-  }, [])
-
 
   const validateField = (field: FieldType, value: string): boolean => {
     if (field.required && !value) {
@@ -135,7 +121,7 @@ const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({
   return (
     <FormContext.Provider value={{ fields, setFields, emptyFields, invalidEmail, isSubmitted, isSubmitting, setIsSubmitted, setIsSubmitting, showErrorMessage, showThanksMessage }}>
       {
-        format === formFormat.POPUP ?  <MailberryFormPopup href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} formId={formId} children={children} showAt={showAt} /> : <MailberryFormSnippet href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} children={children} />
+        format === formFormat.POPUP ?  <MailberryFormPopup href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} formId={formId} children={children} formContainerStyles={formContainerStyles} showAt={showAt} /> : <MailberryFormSnippet href={href} signature={signature} thanksMessage={thanksMessage} formContainerStyles={formContainerStyles} handleSubmit={handleSubmit} children={children} />
       }
     </FormContext.Provider>
   );
