@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { FormPopupOptions, formPopupOptions } from "../types";
-import { getSubscriptionFromLocalStorage } from "../utils/localStorage";
+import { getClosedFormFromLocalStorage, getSubscriptionFromLocalStorage, setClosedFormToLocalStorage } from "../utils/localStorage";
 import { FormContext } from "./MailberryForm";
 
 type MailberryFormPopupProps = {
@@ -64,9 +64,9 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
   const handleDismissOverlay = () => {
     setShowOverlay(false);
 
-    const alreadySubscribed=localStorage.getItem(`subscribed_${formId}`);
+    const alreadySubscribed = getSubscriptionFromLocalStorage(formId);
     if(!alreadySubscribed){
-      localStorage.setItem(`closed_${formId}`, Date.now().toString());
+      setClosedFormToLocalStorage(formId);
     }
   };
 
@@ -95,7 +95,7 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
       const alreadySubscribed = getSubscriptionFromLocalStorage(formId);
       if(alreadySubscribed) return;
 
-      const lastClosed = localStorage.getItem(`closed_${formId}`);
+      const lastClosed = getClosedFormFromLocalStorage(formId);
 
       if(!lastClosed|| Date.now() > parseInt(lastClosed) + 2592000000 ){
 

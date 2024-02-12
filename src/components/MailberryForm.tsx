@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { FieldType, FormPopupOptions, FormatOptions, formFormat } from '../types';
+import { removeClosedFormFromLocalStorage, setSubscriptionToLocalStorage } from '../utils/localStorage';
 import MailberryFormFieldComponents from "./MailberryFormField";
 import MailberryFormPopup from './MailberryPopupOption';
 import MailberryFormSnippet from './MailberrySnippetOption';
@@ -97,8 +98,9 @@ const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({
 
         if (response.ok) {
           setShowThanksMessage(true);
-          localStorage.removeItem(`closed_${formId}`);
-          localStorage.setItem(`subscribed_${formId}`, Date.now().toString());
+
+          removeClosedFormFromLocalStorage(formId);
+          setSubscriptionToLocalStorage(formId)
         } else {
           setShowErrorMessage(true);
         }
