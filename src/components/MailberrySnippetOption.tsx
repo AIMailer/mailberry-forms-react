@@ -31,7 +31,7 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
       {/* Spinner */}
       {
         isSubmitting && (
-          <div style={{ padding: 30, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }}>
             <div style={{ width: 20, height: 20, borderRadius: '50%', border: '4px solid #ccc', borderTopColor: '#999999', animation: 'MBspin-animation 1s linear infinite' }}></div>
           </div>
         ) 
@@ -57,7 +57,7 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
       {/* Thank you message */}
       {
         showThanksMessage && 
-          <div style={{ padding: 30 }}>
+          <div style={{ paddingBottom: 20 }}>
             <p style={{ margin: 10, textAlign: 'center' }}>{thanksMessage}</p>
           </div>
       }
@@ -65,7 +65,7 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
       {/* Error message */}
       {
         showErrorMessage && (
-          <div style={{ padding: 30 }}>
+          <div style={{ paddingBottom: 20 }}>
             <p style={{ margin: 10, textAlign: 'center' }}>Something went wrong.</p>
           </div>
         )
