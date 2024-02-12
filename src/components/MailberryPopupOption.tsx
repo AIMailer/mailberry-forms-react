@@ -107,16 +107,22 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
         }, timer * 1000);
       };
     };
-  }, []);
+
+    return () => {
+      if(showAt === formPopupOptions.AT_30_PERCENT_OF_PAGEVIEW){
+        window.removeEventListener('scroll', checkScrollPosition);
+      }
+    }
+  }, [checkScrollPosition]);
 
   return (
-    <div className="MBoverlay" style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer', width: '100%', height: '100%', minWidth: '100%', minHeight: '100%', position: 'fixed', left: 0, top: 0, backgroundColor: 'rgba(0, 1, 5, 0.8)' }}>
+    <div style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer', width: '100%', height: '100%', minWidth: '100%', minHeight: '100%', position: 'fixed', left: 0, top: 0, backgroundColor: 'rgba(0, 1, 5, 0.8)' }}>
       <div ref={formContainerRef} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', cursor: 'auto' }}>
-        <div className='MBform-container' style={{ ...defaultFormContainerStyles, ...formContainerStyles }}>
+        <div style={{ ...defaultFormContainerStyles, ...formContainerStyles }}>
           {/* Spinner */}
           {
             isSubmitting && (
-              <div style={{ width: 400, padding: '30px 30px 10px 30px', boxSizing: 'border-box', display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: 30 }}>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }}>
                 <div style={{ width: 20, height: 20, borderRadius: '50%', border: '4px solid #ccc', borderTopColor: '#999999', animation: 'MBspin-animation 1s linear infinite' }} />
               </div>
             )
@@ -124,7 +130,7 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
           {/* Form */}
           {
             isSubmitting || !isSubmitted && (
-              <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
+              <form onSubmit={handleSubmit}>
                 {/* Revisar descriptionThanksMessageAndSignStyle color */}
                 <p onClick={() => handleDismissOverlay()} style={{ ...defaultCloseButtonStyle }}>X</p>
                 {children}
@@ -142,7 +148,7 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
           {/* Thank you message */}
           {
             showThanksMessage &&
-              <div style={{ paddingBottom: 30 }}>
+              <div style={{ paddingBottom: 20 }}>
                 <p style={{ margin: 10, textAlign: 'center' }}>{thanksMessage}</p>
               </div>
           }
