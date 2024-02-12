@@ -75,14 +75,7 @@ const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({
     setInvalidEmail(false);
     setEmptyFields(false);
 
-    let allFieldsFilled = true;
-    for (const field of fields) {
-      const value = field.value;
-      if (!validateField(field, value)) {
-        allFieldsFilled = false;
-        break;
-      }
-    }
+    const allFieldsFilled = fields.every(field => validateField(field, field.value));
 
     if(allFieldsFilled){
       setIsSubmitting(true);
