@@ -11,9 +11,9 @@ Mailberry Forms library to use together with https://mailberry.ai form builder
       <p>Hola mi mundo!</p>
       <hr />
     </MailberryForm.Description>
-    <MailberryForm.EmailInput wrapperStyle={{ display: 'flex', flexDirection: 'column' }} label='Email' required />
-    <MailberryForm.TextInput wrapperStyle={{ display: 'flex', flexDirection: 'column' }} label='Last name' required={false} />
-    <MailberryForm.NumberInput wrapperStyle={{ display: 'flex', flexDirection: 'column' }} label='Age' required />
+    <MailberryForm.EmailInput fieldStyles={{ wrapperStyle: { display: 'flex', flexDirection: 'column' }}} label='Email' required />
+    <MailberryForm.TextInput fieldStyles={{ wrapperStyle: { display: 'flex', flexDirection: 'column' }}} label='Last name' required={false} />
+    <MailberryForm.NumberInput fieldStyles={{ wrapperStyle: { display: 'flex', flexDirection: 'column' }}} label='Age' required />
     <MailberryForm.Submit buttonStyles={{ backgroundColor: 'aliceblue', fontSize: 14, padding: 12, fontWeight: 700 }} text="Subscribe" />
   </MailberryForm>
 ```
@@ -30,19 +30,27 @@ Note:
 - MailberryForm format POPUP it renders a the form within a div three times(div overlay > div modal container > div form container > form).
 
 #### Simple Components
-1. **MailberryForm.Description** is a ReactNode and it can be used to wrap the header and description if you want
+1. **MailberryForm.Description** is a ReactNode and it can be used to add the header and description if you want
 2. **MailberryForm.Submit** is a component to add a submit button to the form, has the following props:
-    - **buttonStyles** is the style of the button
     - **text** is the text of the button
-    - **buttonWrapperStyles** is the style of the button wrapper. The buttonWrapperStyles is used to wrap the button.
+    - **submitStyles** is an object with the styles of the submit button. The object has the following keys:
+      - **buttonStyles** is the style of the button
+      - **buttonWrapperStyles** is the style of the button wrapper. The buttonWrapperStyles is used to wrap the button.
 
 #### Inputs
 1. **MailberryForm.EmailInput** is a component to add an email input to the form
 2. **MailberryForm.TextInput** is a component to add a text input to the form
 3. **MailberryForm.NumberInput** is a component to add a number input to the form
 4. **MailberryForm.DateInput** is a component to add a date input to the form
+    - **inputStyles** is an object with the styles of the label, input and their wrapper. The object has the following keys:
+        - **wrapperStyles** is the style of the input and label wrapper(div > label + input)
+        - **labelStyle** is the style of the label
+        - **inputStyle** is the style of the input
 
-## How to made changes in local
+#### Error Messages
+1. **MailberryForm.FieldError** is a component that displays the error message if some of the inputs are invalid.
+
+## Note for the mantainers
 
 In order to use this library in mode local after to make git clone and npm install, follow this steps:
 Consider my-app as the project name and my-library as the library name.
