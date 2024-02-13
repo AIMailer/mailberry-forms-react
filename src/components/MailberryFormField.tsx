@@ -7,9 +7,11 @@ type MailberryFormFieldProps = {
   type: React.HTMLInputTypeAttribute;
   required?: boolean;
 
-  labelStyle?: React.CSSProperties;
-  inputStyle?: React.CSSProperties;
-  wrapperStyle?: React.CSSProperties;
+  fieldStyles?: {
+    label?: React.CSSProperties;
+    input?: React.CSSProperties;
+    wrapper?: React.CSSProperties;
+  }
 }
 
 const defaultInputStyle: React.CSSProperties = {
@@ -25,7 +27,8 @@ const defaultWrapperStyle: React.CSSProperties = {
   gap: 8
 }
 
-const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrapperStyle }: MailberryFormFieldProps): JSX.Element => {
+const FormField = ({ label, type, required = false, fieldStyles = {} }: MailberryFormFieldProps): JSX.Element => {
+  const { input: inputStyle = {}, label: labelStyle = {}, wrapper: wrapperStyle = {} } = fieldStyles;
   const { fields, setFields, invalidEmail, emptyFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,15 +67,18 @@ const FormField = ({ label, type, required = false, labelStyle, inputStyle, wrap
 export type MailberryInputProps = {
   label: string;
   required?: boolean;
-  labelStyle?: React.CSSProperties;
-  inputStyle?: React.CSSProperties;
-  wrapperStyle?: React.CSSProperties;
+
+  fieldStyles?: {
+    label?: React.CSSProperties;
+    input?: React.CSSProperties;
+    wrapper?: React.CSSProperties;
+  } 
 }
 
-const MailberryEmailInput = ({ label, required, inputStyle = {}, labelStyle = {}, wrapperStyle = {} }: MailberryInputProps) => FormField({ label, type: 'email', required, labelStyle, inputStyle, wrapperStyle});
-const MailberryTextInput = ({ label, required, inputStyle = {}, labelStyle = {}, wrapperStyle = {} }: MailberryInputProps) => FormField({label, type: 'text', required, labelStyle, inputStyle, wrapperStyle});
-const MailberryNumberInput = ({ label, required, inputStyle = {}, labelStyle = {}, wrapperStyle = {} }: MailberryInputProps) => FormField({label, type: 'number', required, labelStyle, inputStyle, wrapperStyle});
-const MailberryDateInput = ({ label, required, inputStyle = {}, labelStyle = {}, wrapperStyle = {} }: MailberryInputProps) => FormField({label, type: 'date', required, labelStyle, inputStyle, wrapperStyle});
+const MailberryEmailInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({ label, type: 'email', required, fieldStyles});
+const MailberryTextInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({label, type: 'text', required, fieldStyles});
+const MailberryNumberInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({label, type: 'number', required, fieldStyles});
+const MailberryDateInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({label, type: 'date', required, fieldStyles});
 
 const MailberryFormFieldComponents = {
   MailberryEmailInput,
