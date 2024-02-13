@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { FieldType, FormPopupOptions, FormatOptions, formFormat } from '../types';
+import { FieldType, FormatOptions, PopUpFormShowAt, formFormat } from '../types';
 import { removeClosedFormFromLocalStorage, setSubscriptionToLocalStorage } from '../utils/localStorage';
 import MailberryFormFieldComponents from "./MailberryFormField";
 import MailberryFormPopup from './MailberryPopupOption';
@@ -36,8 +36,8 @@ type MailberryFormProps = {
   signature?: boolean;
   thanksMessage: string;
   format: FormatOptions;
-  showAt?: FormPopupOptions;
   formContainerStyles?: React.CSSProperties;
+  showAt?: PopUpFormShowAt;
   children: React.ReactNode | React.ReactNode[];
 };
 
@@ -52,7 +52,7 @@ interface MailberryFormComponents {
   ThanksMessage: typeof MailberryThanksMessage;
 }
 
-const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt = 'IMMEDIATELY', formContainerStyles = {}, children }): React.ReactNode => {
+const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt, formContainerStyles = {}, children }): React.ReactNode => {
   const href = `${getBaseApiUrl()}/${formId}`;
 
   const [fields, setFields] = useState<FieldType[]>([]);

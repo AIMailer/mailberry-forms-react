@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { formPopupOptions } from "../types";
+import { PopUpFormShowAt, popUpFormOptions } from "../types";
 import { getClosedFormFromLocalStorage, getSubscriptionFromLocalStorage, setClosedFormToLocalStorage } from "../utils/localStorage";
 import { FormContext } from "./MailberryForm";
 
@@ -11,9 +11,10 @@ type MailberryFormPopupProps = {
   formId: string;
   formContainerStyles: React.CSSProperties;
   children: React.ReactNode;
-  showAfterSeconds: number;
-  showAtScroll: number;
+  showAt?: PopUpFormShowAt;
 }
+
+const defaultShowAt: PopUpFormShowAt = { type: popUpFormOptions.TIME, value: 0 };
 
 const defaultCloseButtonStyle: React.CSSProperties = { 
   margin: '20px 0',
@@ -32,23 +33,20 @@ const defaultFormContainerStyles: React.CSSProperties = {
   paddingBottom: 10
 }
 
-const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyles, handleSubmit, formId, children, showAfterSeconds, showAtScroll }: MailberryFormPopupProps) => {
+const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyles, handleSubmit, formId, showAt = defaultShowAt, children }: MailberryFormPopupProps) => {
   const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
   const [showOverlay, setShowOverlay] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
   const checkScrollPosition = () => {
-    if(!(typeof showAtScroll === 'number')) return
-
     const scrollPosition = window.scrollY + window.innerHeight;
     const totalHeight = document.body.scrollHeight;
     const percentage = (scrollPosition / totalHeight) * 100;
 
-    if (percentage >= showAtScroll) {
+    if (percentage >= showAt.value) {
       !showOverlay && setShowOverlay(true)
-      window.removeEventListener('scroll', checkScrollPosition);
     }
-    return
+    return;
   };
 
   // Dismiss overlay when click outside the form, only usefull for popup format
@@ -79,40 +77,41 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
     };
   }, [handleDismissOverlayWhenClickOutside]);
 
-  // Set popup option
+  // Timer to display the popup
   useEffect(() => {
-    if(!showAtScroll && !showAfterSeconds) return;
+    if(showAt.type !== popUpFormOptions.TIME || showAt.value < 0) return
 
-    let timerToDisplayThePopup: NodeJS.Timeout | null = null;
+    const timer = showAt.value;
+    let timeOut: NodeJS.Timeout | null = null;
 
-    if(showAtScroll){
-      window.addEventListener('scroll', checkScrollPosition);
+    const alreadySubscribed = getSubscriptionFromLocalStorage(formId);
+    if(alreadySubscribed) return;
 
-      return
-    }else if(showAfterSeconds) {
-      let timer = showAfterSeconds;
+    const lastClosed = getClosedFormFromLocalStorage(formId);
 
-      const alreadySubscribed = getSubscriptionFromLocalStorage(formId);
-      if(alreadySubscribed) return;
-
-      const lastClosed = getClosedFormFromLocalStorage(formId);
-
-      if(!lastClosed|| Date.now() > parseInt(lastClosed) + 2592000000 ){
-        timerToDisplayThePopup = setTimeout(() => {
-          setShowOverlay(true);
-  
-          // Send a request to register that the form was viewed
-          fetch(href)
-        }, timer * 1000);
-      };
+    if(!lastClosed || Date.now() > parseInt(lastClosed) + 2592000000){
+      timeOut = setTimeout(() => {
+        setShowOverlay(true);
+        fetch(href);
+      }, timer * 1000);
     };
-
+  
     return () => {
-      window.removeEventListener('scroll', checkScrollPosition);
-      !!timerToDisplayThePopup && clearTimeout(timerToDisplayThePopup);
+      !!timeOut && clearTimeout(timeOut);
     }
-  }, [checkScrollPosition, showAtScroll, showAfterSeconds, formId, href]);
+  }, [showAt, formId, href])
 
+  // Scroll to display the popup
+  useEffect(() => {
+    if(showAt.type !== popUpFormOptions.SCROLL || showAt.value < 0) return
+
+    window.addEventListener('scroll', checkScrollPosition);
+    
+    return () => {
+      window.removeEventListener('scroll', checkScrollPosition);  
+    }
+  }, [showAt, checkScrollPosition])
+  
   return (
     <div style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer', width: '100%', height: '100%', minWidth: '100%', minHeight: '100%', position: 'fixed', left: 0, top: 0, backgroundColor: 'rgba(0, 1, 5, 0.8)' }}>
       <div ref={formContainerRef} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', cursor: 'auto' }}>

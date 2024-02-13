@@ -35,16 +35,22 @@ export type MailberryFormCSSProps = {
   };
 }
 
-export const formPopupOptions = {
-  IMMEDIATELY: "IMMEDIATELY",
-  AFTER_10_SECONDS: "AFTER_10_SECONDS",
-  AFTER_30_SECONDS: "AFTER_30_SECONDS",
+export const formFormat = {
+  SNIPPET: 'SNIPPET' as const,
+  POPUP: 'POPUP' as const,
 }
 
-export const formFormat = {
-  SNIPPET: 'SNIPPET',
-  POPUP: 'POPUP',
+export const popUpFormOptions = {
+  SCROLL: 'SCROLL' as const,
+  TIME: 'TIME' as const,
 }
+
+type PopupFormType = keyof typeof popUpFormOptions;
+
+export type PopUpFormShowAt = {
+  type: PopupFormType;
+  value: number;
+}
+
 
 export type FormatOptions = keyof typeof formFormat;
-export type FormPopupOptions = keyof typeof formPopupOptions | number;
