@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { FormPopupOptions, formPopupOptions } from "../types";
+import { formPopupOptions } from "../types";
 import { getClosedFormFromLocalStorage, getSubscriptionFromLocalStorage, setClosedFormToLocalStorage } from "../utils/localStorage";
 import { FormContext } from "./MailberryForm";
 
@@ -8,10 +8,11 @@ type MailberryFormPopupProps = {
   signature: boolean;
   thanksMessage: string;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  showAt: FormPopupOptions;
   formId: string;
   formContainerStyles: React.CSSProperties;
   children: React.ReactNode;
+  showAfterSeconds: number;
+  showAtScroll: number;
 }
 
 const defaultCloseButtonStyle: React.CSSProperties = { 
@@ -31,17 +32,19 @@ const defaultFormContainerStyles: React.CSSProperties = {
   paddingBottom: 10
 }
 
-const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyles, handleSubmit, showAt, formId, children }: MailberryFormPopupProps) => {
+const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyles, handleSubmit, formId, children, showAfterSeconds, showAtScroll }: MailberryFormPopupProps) => {
   const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
   const [showOverlay, setShowOverlay] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
   const checkScrollPosition = () => {
+    if(!(typeof showAtScroll === 'number')) return
+
     const scrollPosition = window.scrollY + window.innerHeight;
     const totalHeight = document.body.scrollHeight;
     const percentage = (scrollPosition / totalHeight) * 100;
 
-    if (typeof showAt === 'number' && percentage >= showAt) {
+    if (percentage >= showAtScroll) {
       !showOverlay && setShowOverlay(true)
       window.removeEventListener('scroll', checkScrollPosition);
     }
@@ -74,20 +77,20 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
     return () => {
       document.removeEventListener("mousedown", handleDismissOverlayWhenClickOutside);
     };
-  }, []);
+  }, [handleDismissOverlayWhenClickOutside]);
 
   // Set popup option
   useEffect(() => {
-    if(typeof showAt === 'number'){
+    if(!showAtScroll && !showAfterSeconds) return;
+
+    let timerToDisplayThePopup: NodeJS.Timeout | null = null;
+
+    if(showAtScroll){
       window.addEventListener('scroll', checkScrollPosition);
 
       return
-    }else {
-      let timer = 0;
-      
-      if(showAt === formPopupOptions.IMMEDIATELY) timer = 0;
-      if(showAt === formPopupOptions.AFTER_10_SECONDS) timer = 10;
-      if(showAt === formPopupOptions.AFTER_30_SECONDS) timer = 30;
+    }else if(showAfterSeconds) {
+      let timer = showAfterSeconds;
 
       const alreadySubscribed = getSubscriptionFromLocalStorage(formId);
       if(alreadySubscribed) return;
@@ -95,8 +98,7 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
       const lastClosed = getClosedFormFromLocalStorage(formId);
 
       if(!lastClosed|| Date.now() > parseInt(lastClosed) + 2592000000 ){
-
-        setTimeout(() => {
+        timerToDisplayThePopup = setTimeout(() => {
           setShowOverlay(true);
   
           // Send a request to register that the form was viewed
@@ -106,11 +108,10 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
     };
 
     return () => {
-      if(typeof showAt == 'number'){
-        window.removeEventListener('scroll', checkScrollPosition);
-      }
+      window.removeEventListener('scroll', checkScrollPosition);
+      !!timerToDisplayThePopup && clearTimeout(timerToDisplayThePopup);
     }
-  }, [checkScrollPosition, showAt]);
+  }, [checkScrollPosition, showAtScroll, showAfterSeconds, formId, href]);
 
   return (
     <div style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer', width: '100%', height: '100%', minWidth: '100%', minHeight: '100%', position: 'fixed', left: 0, top: 0, backgroundColor: 'rgba(0, 1, 5, 0.8)' }}>
