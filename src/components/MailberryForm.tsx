@@ -21,7 +21,15 @@ type ContextProps = {
 
 export const FormContext = createContext({} as ContextProps);
 
-const API_FORM_URL = 'https://backend.mailberry.ai/public'
+const getBaseApiUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://backend.mailberry.ai/public';
+  }else if (process.env.NODE_ENV === 'staging') {
+    return 'https://d3qk4izoppjipb.cloudfront.net/public';
+  }
+
+  return 'http://localhost:8000/public';
+}
 
 type MailberryFormProps = {
   formId: string;
@@ -45,7 +53,7 @@ interface MailberryFormComponents {
 }
 
 const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt = 'IMMEDIATELY', formContainerStyles = {}, children }): React.ReactNode => {
-  const href = `${API_FORM_URL}/${formId}`;
+  const href = `${getBaseApiUrl()}/${formId}`;
 
   const [fields, setFields] = useState<FieldType[]>([]);
   const [emptyFields, setEmptyFields] = useState(false);
