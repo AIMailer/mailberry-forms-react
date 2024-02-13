@@ -4,32 +4,62 @@ Mailberry Forms library to use together with https://mailberry.ai form builder
 
 ### Basic usage
 
+**Snippet Option:**
 ```jsx
-  <MailberryForm formId='01HMVBQ5MD2TEPDG73' thanksMessage='Thanks for sub!' format='SNIPPET' formContainerStyles={{backgroundColor: 'aliceblue'}}>
+  <MailberryForm formId='01HN40RQ***************' thanksMessage='Thanks for sub!' format='SNIPPET' formContainerStyles={{ backgroundColor: 'aliceblue' }}>
+      <MailberryForm.Description>
+        <h2 style={{ textAlign: 'center' }}>Hello world!</h2>
+        <p>Hola mi mundo!</p>
+        <hr />
+      </MailberryForm.Description>
+      <MailberryForm.FieldError />
+      <MailberryForm.EmailInput fieldStyles={{ wrapper: { backgroundColor: 'red' }}} label='Email' required />
+      <MailberryForm.TextInput fieldStyles={{ wrapper: { backgroundColor: 'red' }}} label='Last name' required={false} />
+      <MailberryForm.TextInput fieldStyles={{ wrapper: { backgroundColor: 'red' }}} label='Age' required />
+      <MailberryForm.Submit submitStyles={{ button: { width: '100%' } }} text="Subscribe" />
+    </MailberryForm>
+```
+
+**Popup Option:**
+```jsx
+  <MailberryForm
+    formId='01HMVBQ5MD2TEPDG7303M9CZCR'
+    thanksMessage='Thanks for sub!'
+    format='POPUP'
+    showAt={{
+      type: 'TIME',
+      value: 5,
+    }}
+    formContainerStyles={{ backgroundColor: 'aliceblue' }}
+  >
     <MailberryForm.Description>
       <h2 style={{ textAlign: 'center' }}>Hello world!</h2>
       <p>Hola mi mundo!</p>
       <hr />
     </MailberryForm.Description>
-    <MailberryForm.EmailInput fieldStyles={{ wrapperStyle: { display: 'flex', flexDirection: 'column' }}} label='Email' required />
-    <MailberryForm.TextInput fieldStyles={{ wrapperStyle: { display: 'flex', flexDirection: 'column' }}} label='Last name' required={false} />
-    <MailberryForm.NumberInput fieldStyles={{ wrapperStyle: { display: 'flex', flexDirection: 'column' }}} label='Age' required />
-    <MailberryForm.Submit buttonStyles={{ backgroundColor: 'aliceblue', fontSize: 14, padding: 12, fontWeight: 700 }} text="Subscribe" />
+    <MailberryForm.FieldError />
+    <MailberryForm.EmailInput fieldStyles={{ wrapper: { backgroundColor: 'red' }}} label='Email' required />
+    <MailberryForm.TextInput fieldStyles={{ wrapper: { backgroundColor: 'red' }}} label='Last name' required={false} />
+    <MailberryForm.Submit submitStyles={{ button: { width: '100%' } }} text="Subscribe" />
   </MailberryForm>
 ```
-#### MailberryForm component
+## Components Description:
+
+### MailberryForm component
 The MailberryForm component is the main component of the library. It has the following props:
 1. **formId** is the id of the form you want to use
 2. **thanksMessage** is the message that will be shown after the form is submitted
 3. **format** is the format of the form, it can be 'SNIPPET' or 'POPUP'
 4. **formContainerStyles** is the style of the form container
-5. **showAt** is the time in seconds that the form will be shown after the page is loaded. If a value number is passed, the poup will be shown after percentage of the page is scrolled. Values allowed 0 - 1, where 0.5 represents 50% of the page scrolled.
+5. **showAt** is only useful when the format is POPUP. This prop is an object with the following props:
+    - **type** is the type of the showAt, it can be 'TIME' or 'SCROLL'
+    - **value** is the value of the showAt, if the type is 'TIME' it is the time in seconds, if the type is 'SCROLL' it is the percentage of the scroll i.e 0.5, where 0.5 is 50% of the scroll
 
 Note: 
 - MailberryForm format SNIPPET render a form within a div(div form container > form).
 - MailberryForm format POPUP it renders a the form within a div three times(div overlay > div modal container > div form container > form).
 
-#### Simple Components
+### Simple Components
 1. **MailberryForm.Description** is a ReactNode and it can be used to add the header and description if you want
 2. **MailberryForm.Submit** is a component to add a submit button to the form, has the following props:
     - **text** is the text of the button
@@ -37,7 +67,7 @@ Note:
       - **buttonStyles** is the style of the button
       - **buttonWrapperStyles** is the style of the button wrapper. The buttonWrapperStyles is used to wrap the button.
 
-#### Inputs
+### Inputs
 1. **MailberryForm.EmailInput** is a component to add an email input to the form
 2. **MailberryForm.TextInput** is a component to add a text input to the form
 3. **MailberryForm.NumberInput** is a component to add a number input to the form
@@ -47,7 +77,7 @@ Note:
         - **labelStyle** is the style of the label
         - **inputStyle** is the style of the input
 
-#### Error Messages
+### Error Messages
 1. **MailberryForm.FieldError** is a component that displays the error message if some of the inputs are invalid.
 
 ## Note for the mantainers
