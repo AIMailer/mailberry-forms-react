@@ -1,5 +1,4 @@
-import React from 'react';
-import { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from 'react';
 import { FormContext } from "./MailberryForm";
 
 type MailberryFormFieldProps = {
@@ -21,15 +20,25 @@ const defaultInputStyle: React.CSSProperties = {
   marginBottom: 5,
 }
 
-const defaultWrapperStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 8
+const generateDefaultWrapperStyle = (type: React.HTMLInputTypeAttribute): React.CSSProperties => {
+  if (type === 'checkbox') {
+    return {
+      display: 'flex',
+      flexDirection: 'row-reverse',
+      gap: 4
+    }
+  }
+
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8
+  }
 }
 
 const FormField = ({ label, type, required = false, fieldStyles = {} }: MailberryFormFieldProps): JSX.Element => {
   const { input: inputStyle = {}, label: labelStyle = {}, wrapper: wrapperStyle = {} } = fieldStyles;
-  const { fields, setFields, invalidEmail, emptyFields } = useContext(FormContext);
+  const { fields, setFields } = useContext(FormContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFields(fields.map(field => field.label.toLowerCase() === label.toLowerCase() ? { ...field, value: e.target.value } : field));
@@ -44,22 +53,20 @@ const FormField = ({ label, type, required = false, fieldStyles = {} }: Mailberr
   }, []);
 
   return (
-    <div style={{ ...defaultWrapperStyle, ...wrapperStyle }}>
+    <div style={{ ...generateDefaultWrapperStyle(type), ...wrapperStyle }}>
       <label htmlFor={`mailberry-${labelIdentifier}-${type}`} className='MBlabel' style={labelStyle}>
         {label}{required && '*'}
       </label>
-      <input 
+      <input
         ref={inputRef}
         id={`mailberry-${labelIdentifier}-${type}`} 
         type={type}
-        name={label} 
+        name={label}
         onChange={handleChange} 
         autoComplete='off'
         required={required}
         style={{...defaultInputStyle, ...inputStyle}}
       />
-      { invalidEmail && type === 'email' && <p style={{color: "red", fontSize: "14px", fontFamily: "Arial", paddingLeft: 0, marginTop: 0, marginBottom: 4}}>Please enter a valid email address</p> }
-      { emptyFields && required && <p style={{color: "red", fontSize: "14px", fontFamily: "Arial", paddingLeft: 0, marginTop: 0, marginBottom: 4}}>Please fill in all required fields</p> }
     </div>
   );
 };
@@ -79,12 +86,14 @@ const MailberryEmailInput = ({ label, required, fieldStyles = {} }: MailberryInp
 const MailberryTextInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({label, type: 'text', required, fieldStyles});
 const MailberryNumberInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({label, type: 'number', required, fieldStyles});
 const MailberryDateInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({label, type: 'date', required, fieldStyles});
+const MailberryCheckboxInput = ({ label, required, fieldStyles = {} }: MailberryInputProps) => FormField({label, type: 'checkbox', required, fieldStyles});
 
 const MailberryFormFieldComponents = {
   MailberryEmailInput,
   MailberryTextInput,
   MailberryNumberInput,
-  MailberryDateInput
+  MailberryDateInput,
+  MailberryCheckboxInput
 }
 
 export default MailberryFormFieldComponents;

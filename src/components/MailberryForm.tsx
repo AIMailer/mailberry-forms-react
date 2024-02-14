@@ -46,6 +46,7 @@ interface MailberryFormComponents {
   TextInput: typeof MailberryFormFieldComponents.MailberryTextInput;
   NumberInput: typeof MailberryFormFieldComponents.MailberryNumberInput;
   DateInput: typeof MailberryFormFieldComponents.MailberryDateInput;
+  CheckboxInput: typeof MailberryFormFieldComponents.MailberryCheckboxInput;
   Description: typeof MailberryDescription;
   FieldError: typeof MailberryFieldError;
   Submit: typeof MailberrySubmit;
@@ -158,6 +159,7 @@ MailberryForm.EmailInput = MailberryFormFieldComponents.MailberryEmailInput;
 MailberryForm.TextInput = MailberryFormFieldComponents.MailberryTextInput;
 MailberryForm.NumberInput = MailberryFormFieldComponents.MailberryNumberInput;
 MailberryForm.DateInput = MailberryFormFieldComponents.MailberryDateInput;
+MailberryForm.CheckboxInput = MailberryFormFieldComponents.MailberryCheckboxInput;
 MailberryForm.Description = MailberryDescription;
 MailberryForm.FieldError = MailberryFieldError;
 MailberryForm.Submit = MailberrySubmit;
