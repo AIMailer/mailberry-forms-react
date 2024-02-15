@@ -9,7 +9,7 @@ Mailberry Forms library to use together with https://mailberry.ai form builder
   <MailberryForm formId='01HN40RQ***************' thanksMessage='Thanks for sub!' format='SNIPPET' formContainerStyles={{ backgroundColor: 'aliceblue' }}>
       <MailberryForm.Description>
         <h2 style={{ textAlign: 'center' }}>Hello world!</h2>
-        <p>Hola mi mundo!</p>
+        <p>I'm a description!</p>
         <hr />
       </MailberryForm.Description>
       <MailberryForm.FieldError />
@@ -34,7 +34,7 @@ Mailberry Forms library to use together with https://mailberry.ai form builder
   >
     <MailberryForm.Description>
       <h2 style={{ textAlign: 'center' }}>Hello world!</h2>
-      <p>Hola mi mundo!</p>
+      <p>I'm a description!</p>
       <hr />
     </MailberryForm.Description>
     <MailberryForm.FieldError />
