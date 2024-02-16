@@ -13,27 +13,37 @@ type MailberryFormFieldProps = {
   }
 }
 
-const defaultInputStyle: React.CSSProperties = {
-  padding: 11,
-  border: '1px solid #ccc',
-  borderRadius: 5,
-  marginBottom: 5,
-}
-
-const generateDefaultWrapperStyle = (type: React.HTMLInputTypeAttribute): React.CSSProperties => {
+const generateDefaultStyles = (type: React.HTMLInputTypeAttribute) => {
   if (type === 'checkbox') {
-    return {
+    const wrapperStyle: React.CSSProperties = {
       display: 'flex',
       flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'start',
       gap: 4
     }
+    const inputStyle: React.CSSProperties = {
+      width: 16,
+      height: 16,
+      margin: 0
+    }
+    
+    return { wrapperStyle, inputStyle };
   }
 
-  return {
+  const wrapperStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     gap: 8
   }
+  const inputStyle: React.CSSProperties = {
+    padding: 11,
+    border: '1px solid #ccc',
+    borderRadius: 5,
+    marginBottom: 5,
+  }
+  
+  return { wrapperStyle, inputStyle };
 }
 
 const FormField = ({ label, type, required = false, fieldStyles = {} }: MailberryFormFieldProps): JSX.Element => {
@@ -44,6 +54,7 @@ const FormField = ({ label, type, required = false, fieldStyles = {} }: Mailberr
     setFields(fields.map(field => field.label.toLowerCase() === label.toLowerCase() ? { ...field, value: e.target.value } : field));
   };
   const labelIdentifier = label.toLowerCase().replace(' ', '-');
+  const defaultStyles = generateDefaultStyles(type);
 
   // When they are mounted, add the field to the form so we are adding a new field to the form for each input
   useEffect(() => {
@@ -53,7 +64,7 @@ const FormField = ({ label, type, required = false, fieldStyles = {} }: Mailberr
   }, []);
 
   return (
-    <div style={{ ...generateDefaultWrapperStyle(type), ...wrapperStyle }}>
+    <div style={{ ...defaultStyles.wrapperStyle, ...wrapperStyle }}>
       <label htmlFor={`mailberry-${labelIdentifier}-${type}`} className='MBlabel' style={labelStyle}>
         {label}{required && '*'}
       </label>
@@ -65,7 +76,7 @@ const FormField = ({ label, type, required = false, fieldStyles = {} }: Mailberr
         onChange={handleChange} 
         autoComplete='off'
         required={required}
-        style={{...defaultInputStyle, ...inputStyle}}
+        style={{...defaultStyles.inputStyle, ...inputStyle}}
       />
     </div>
   );
