@@ -1,155 +1,168 @@
-import React, { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { FieldType, FormatOptions, PopUpFormShowAt, formFormat } from '../types';
+import { removeClosedFormFromLocalStorage, setSubscriptionToLocalStorage } from '../utils/localStorage';
+import MailberryFormFieldComponents from "./MailberryFormField";
+import MailberryFormPopup from './MailberryPopupOption';
+import MailberryFormSnippet from './MailberrySnippetOption';
+import MailberrySubmit from './MailberrySubmit';
 
-// Enums for FORMAT and FORM_POPUP_OPTIONS
-enum FORMAT {
-  Snippet = "snippet",
-  Popup = "popup",
-  Page = "page",
+type ContextProps = {
+  fields: FieldType[];
+  setFields: React.Dispatch<React.SetStateAction<FieldType[]>>;
+  emptyFields: boolean;
+  invalidEmail: boolean;
+  isSubmitting: boolean;
+  setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
+  isSubmitted: boolean;
+  setIsSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  showErrorMessage: boolean;
+  showThanksMessage: boolean;
 }
 
-enum FORM_POPUP_OPTIONS {
-  Immediately = "immediately",
-  After10Seconds = "after-10-seconds",
-  After30Seconds = "after-30-seconds",
-  At30PercentOfPageview = "at-30-percent-of-pageview",
+export const FormContext = createContext({} as ContextProps);
+
+const getBaseApiUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://backend.mailberry.ai/public';
+  }else if (process.env.NODE_ENV === 'staging') {
+    return 'https://d3qk4izoppjipb.cloudfront.net/public';
+  }
+
+  return 'http://localhost:8000/public';
 }
 
-interface Field {
-  label: string;
-  type: 'text' | 'email' | 'number'; // Add more types as needed
-  required: boolean;
-}
-
-interface Text {
-  header?: string;
-  description?: string;
-  thanksMessage: string;
-  button: string;
-}
-
-interface Style {
-  mainStyle: {
-    pageColor?: string; // Add other style properties as needed
-  };
-}
-
-interface MailberryFormProps {
+type MailberryFormProps = {
   formId: string;
-  fields: Field[];
-  text: Text;
-  href: string;
-  style: Style;
   signature?: boolean;
-  format: FORMAT;
-  showAt?: FORM_POPUP_OPTIONS;
+  thanksMessage: string;
+  format: FormatOptions;
+  formContainerStyles?: React.CSSProperties;
+  showAt?: PopUpFormShowAt;
+  children: React.ReactNode | React.ReactNode[];
+};
+
+interface MailberryFormComponents {
+  EmailInput: typeof MailberryFormFieldComponents.MailberryEmailInput;
+  TextInput: typeof MailberryFormFieldComponents.MailberryTextInput;
+  NumberInput: typeof MailberryFormFieldComponents.MailberryNumberInput;
+  DateInput: typeof MailberryFormFieldComponents.MailberryDateInput;
+  CheckboxInput: typeof MailberryFormFieldComponents.MailberryCheckboxInput;
+  Description: typeof MailberryDescription;
+  FieldError: typeof MailberryFieldError;
+  Submit: typeof MailberrySubmit;
+  ThanksMessage: typeof MailberryThanksMessage;
 }
 
-const MailberryForm: React.FC<MailberryFormProps> = ({ formId, fields, text, href, style, signature, format, showAt }) => {
-  const [formData, setFormData] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [showForm, setShowForm] = useState<boolean>(false);
-  const [showThanksMessage, setShowThanksMessage] = useState<boolean>(false);
-  const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
+const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt, formContainerStyles = {}, children }): React.ReactNode => {
+  const href = `${getBaseApiUrl()}/${formId}`;
 
-  useEffect(() => {
-    // Logic to determine when to show the form based on `format` and `showAt`
-    // Similar to the existing JavaScript logic
-  }, [format, showAt]);
+  const [fields, setFields] = useState<FieldType[]>([]);
+  const [emptyFields, setEmptyFields] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showThanksMessage, setShowThanksMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
-  const handleInputChange = (label: string, value: string) => {
-    setFormData(prev => ({ ...prev, [label.toLowerCase()]: value }));
-  };
-
-  const validateField = (field: Field, value: string): boolean => {
-    if (field.required && !value) return false;
-    if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return false;
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    let isValid = true;
-    for (const field of fields) {
-      const value = formData[field.label.toLowerCase()];
-      if (!validateField(field, value)) {
-        isValid = false;
-        break;
-      }
+  const validateField = (field: FieldType, value: string): boolean => {
+    if (field.required && !value) {
+      setEmptyFields(true);
+      return false
+    }
+    if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setInvalidEmail(true);
+      return false
     }
 
-    if (isValid) {
+    setEmptyFields(false);
+    setInvalidEmail(false);
+    return true;
+  };
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setInvalidEmail(false);
+    setEmptyFields(false);
+
+    const allFieldsFilled = fields.every(field => validateField(field, field.value));
+
+    if(allFieldsFilled){
+      setIsSubmitting(true);
+
+      // get the fields in this format { label: value }
+      const formData: Record<string, string> = {};
+      fields.forEach(field => {
+        formData[field.label.toLowerCase()] = field.value;
+      });
+
       try {
         const response = await fetch(href, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         });
+
+        setIsSubmitted(true);
+
         if (response.ok) {
           setShowThanksMessage(true);
+
+          removeClosedFormFromLocalStorage(formId);
+          setSubscriptionToLocalStorage(formId)
         } else {
           setShowErrorMessage(true);
         }
       } catch (error) {
-        setShowErrorMessage(true);
+        setIsSubmitted(true);
+        setShowErrorMessage(true); 
+      } finally {
+        setIsSubmitting(false);
       }
     }
-
-    setIsSubmitting(false);
   };
 
   return (
-    <div className={`mailberry-form mailberry-${format}`} style={{ display: showForm ? 'block' : 'none' }}>
-      <form onSubmit={handleSubmit}>
-        {
-        fields.map((field, index) => (
-          <div key={index} className="MBinput-wrapper">
-            <label className="MBlabel">
-              {field.label}{field.required && '*'}
-            </label>
-            <input
-              type={field.type}
-              name={field.label}
-              required={field.required}
-              className="MBinput"
-              value={formData[field.label.toLowerCase()] || ''}
-              onChange={(e) => handleInputChange(field.label, e.target.value)}
-            />
-          </div>
-        ))
+    <FormContext.Provider value={{ fields, setFields, emptyFields, invalidEmail, isSubmitted, isSubmitting, setIsSubmitted, setIsSubmitting, showErrorMessage, showThanksMessage }}>
+      {
+        format === formFormat.POPUP ?  <MailberryFormPopup href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} formId={formId} children={children} formContainerStyles={formContainerStyles} showAt={showAt} /> : <MailberryFormSnippet href={href} signature={signature} thanksMessage={thanksMessage} formContainerStyles={formContainerStyles} handleSubmit={handleSubmit} children={children} />
       }
-      {/* Submit Button */}
-      <div className="MBbtn-wrapper">
-        <button type="submit" className="MBbtn" disabled={isSubmitting}>
-          {text.button}
-        </button>
-      </div>
-
-      {/* Optional: Loader while submitting */}
-      {isSubmitting && (
-        <div className="MBspinner-wrapper">
-          <div className="MBspinner"></div>
-          {/* You can add a spinner icon or animation here */}
-        </div>
-      )}
-
-      {/* Optional: Success and Error Messages */}
-      {showThanksMessage && (
-        <div className="MBthank-you-wrapper">
-          <p className="MBthank-you-message">{text.thanksMessage}</p>
-        </div>
-      )}
-      {showErrorMessage && (
-        <div className="MBerror-wrapper">
-          <p className="MBerror-message">
-            Something went wrong.
-          </p>
-        </div>
-      )}
-      </form>
-    </div>
+    </FormContext.Provider>
   );
 };
+
+type MailberryNode = {
+  children: React.ReactNode;
+}
+
+const MailberryDescription: React.FC<MailberryNode> = ({ children }): React.ReactNode => (<>{children}</>);
+
+const MailberryThanksMessage = ({ children }: MailberryNode): React.ReactNode => (<>{children}</>);
+
+type MailberryFieldErrorProps = {
+  listWrapperStyles?: React.CSSProperties;
+  listStyles?: React.CSSProperties;
+}
+
+const MailberryFieldError: React.FC <MailberryFieldErrorProps> = ({ listWrapperStyles, listStyles }): React.ReactNode => {
+  const { invalidEmail, emptyFields } = useContext(FormContext);
+
+  return (
+    <ul style={listWrapperStyles ?? { color: 'red', display: 'none', fontSize: 14, fontFamily: 'Arial', paddingLeft: 0, listStyle: 'none' }}>
+      {invalidEmail && <li style={listStyles} >Please enter a valid email address</li>}
+      {emptyFields && <li style={listStyles} >Please fill in all required fields</li>}
+    </ul>
+  )
+};
+
+MailberryForm.EmailInput = MailberryFormFieldComponents.MailberryEmailInput;
+MailberryForm.TextInput = MailberryFormFieldComponents.MailberryTextInput;
+MailberryForm.NumberInput = MailberryFormFieldComponents.MailberryNumberInput;
+MailberryForm.DateInput = MailberryFormFieldComponents.MailberryDateInput;
+MailberryForm.CheckboxInput = MailberryFormFieldComponents.MailberryCheckboxInput;
+MailberryForm.Description = MailberryDescription;
+MailberryForm.FieldError = MailberryFieldError;
+MailberryForm.Submit = MailberrySubmit;
+MailberryForm.ThanksMessage = MailberryThanksMessage;
 
 export default MailberryForm;
