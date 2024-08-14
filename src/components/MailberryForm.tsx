@@ -25,7 +25,7 @@ const getBaseApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
     return 'https://backend.mailberry.ai/public';
   }else if (process.env.NODE_ENV === 'staging') {
-    return 'https://y4xtgbmdcf.execute-api.us-west-1.amazonaws.com/public';
+    return 'https://y4xtgbmdcf.execute-api.us-west-1.amazonaws.com/production/public';
   }
 
   return 'http://localhost:8000/public';
