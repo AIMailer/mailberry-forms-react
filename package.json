@@ -1,6 +1,6 @@
 {
   "name": "mailberry-forms-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Mailberry Forms components to be used on a ReactJS/NextJS project",
   "main": "./dist/cjs/index.js",
   "module": "./dist/index.js",
