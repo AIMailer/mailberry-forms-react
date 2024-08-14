@@ -36,7 +36,11 @@ type MailberryFormProps = {
   signature?: boolean;
   thanksMessage: string;
   format: FormatOptions;
-  formContainerStyles?: React.CSSProperties;
+  formStyles: {
+    container?: React.CSSProperties;
+    wrapper?: React.CSSProperties;
+    form?: React.CSSProperties;
+  };
   showAt?: PopUpFormShowAt;
   children: React.ReactNode | React.ReactNode[];
 };
@@ -53,7 +57,7 @@ interface MailberryFormComponents {
   ThanksMessage: typeof MailberryThanksMessage;
 }
 
-const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt, formContainerStyles = {}, children }): React.ReactNode => {
+const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt, formStyles = {}, children }): React.ReactNode => {
   const href = `${getBaseApiUrl()}/${formId}`;
 
   const [fields, setFields] = useState<FieldType[]>([]);
@@ -125,7 +129,11 @@ const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({
   return (
     <FormContext.Provider value={{ fields, setFields, emptyFields, invalidEmail, isSubmitted, isSubmitting, setIsSubmitted, setIsSubmitting, showErrorMessage, showThanksMessage }}>
       {
-        format === formFormat.POPUP ?  <MailberryFormPopup href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} formId={formId} children={children} formContainerStyles={formContainerStyles} showAt={showAt} /> : <MailberryFormSnippet href={href} signature={signature} thanksMessage={thanksMessage} formContainerStyles={formContainerStyles} handleSubmit={handleSubmit} children={children} />
+        format === formFormat.POPUP
+        ?
+          <MailberryFormPopup href={href} signature={signature} thanksMessage={thanksMessage} handleSubmit={handleSubmit} formId={formId} children={children} formStyles={formStyles} showAt={showAt} />
+        :
+          <MailberryFormSnippet href={href} signature={signature} thanksMessage={thanksMessage} formStyles={formStyles} handleSubmit={handleSubmit} children={children} />
       }
     </FormContext.Provider>
   );

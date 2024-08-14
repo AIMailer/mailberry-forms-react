@@ -9,7 +9,11 @@ type MailberryFormPopupProps = {
   thanksMessage: string;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   formId: string;
-  formContainerStyles: React.CSSProperties;
+  formStyles: {
+    container?: React.CSSProperties;
+    wrapper?: React.CSSProperties;
+    form?: React.CSSProperties;
+  };
   children: React.ReactNode;
   showAt?: PopUpFormShowAt;
 }
@@ -33,7 +37,7 @@ const defaultFormContainerStyles: React.CSSProperties = {
   paddingBottom: 10
 }
 
-const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyles, handleSubmit, formId, showAt = defaultShowAt, children }: MailberryFormPopupProps) => {
+const MailberryFormPopup = ({ href, signature, thanksMessage, formStyles, handleSubmit, formId, showAt = defaultShowAt, children }: MailberryFormPopupProps) => {
   const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
   const [showOverlay, setShowOverlay] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
@@ -115,7 +119,7 @@ const MailberryFormPopup = ({ href, signature, thanksMessage, formContainerStyle
   return (
     <div style={{ display: showOverlay ? 'block' : 'none', cursor: 'pointer', width: '100%', height: '100%', minWidth: '100%', minHeight: '100%', position: 'fixed', left: 0, top: 0, backgroundColor: 'rgba(0, 1, 5, 0.8)' }}>
       <div ref={formContainerRef} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', cursor: 'auto' }}>
-        <div style={{ ...defaultFormContainerStyles, ...formContainerStyles }}>
+        <div style={{ ...defaultFormContainerStyles, ...formStyles.container }}>
           {/* Spinner */}
           {
             isSubmitting && (

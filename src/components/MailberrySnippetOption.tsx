@@ -6,7 +6,11 @@ type MailberrySnippetProps = {
   signature: boolean;
   thanksMessage: string;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  formContainerStyles: React.CSSProperties;
+  formStyles: {
+    container?: React.CSSProperties;
+    wrapper?: React.CSSProperties;
+    form?: React.CSSProperties;
+  };
   children: React.ReactNode;
 }
 
@@ -14,12 +18,11 @@ const defaultFormContainerStyles: React.CSSProperties = {
   width: 400,
   borderRadius: 12,
   animation: 'MBopacity-in 0.4s linear',
-  padding: 30,
-  paddingBottom: 10
 }
 
-const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, formContainerStyles, children }: MailberrySnippetProps) => {
+const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, formStyles, children }: MailberrySnippetProps) => {
   const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
+  const { container: containerStyle, wrapper: wrapperStyle, form: formStyle } = formStyles
 
   // Every time this component is rendered, we send a request to register that the form was viewed
   useEffect(() => {
@@ -27,7 +30,7 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
   }, []);
 
   return (
-    <div style={{ ...defaultFormContainerStyles, ...formContainerStyles }}>
+    <div style={{ ...defaultFormContainerStyles, ...containerStyle }}>
       {/* Spinner */}
       {
         isSubmitting && (
@@ -40,17 +43,22 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
       {/* Form */}
       {
         isSubmitting || !isSubmitted && (
-          <form onSubmit={handleSubmit}>
-            {children}
-            {
-              signature && (
-                <div style={{ display: 'flex', marginTop: 20, justifyContent: 'center' }}>
-                  <p style={{ fontSize: 8, fontFamily: 'Arial, Helvetica, sans-serif' }}>Powered by</p>
-                  <a href={href} target='_blank' rel='noopener noreferrer'><p style={{ fontSize: 8, fontFamily: 'Arial, Helvetica, sans-serif', marginLeft: 2 }}>MailBerry</p></a>
-                </div>
-              )
-            }
-          </form>
+          <div style={wrapperStyle}>
+            <form onSubmit={handleSubmit} style={formStyle}>
+              {Array.isArray(children) ? children.slice(0,-1) : children}
+            </form>
+              <div style={{ width: '100%' }}>
+                {Array.isArray(children) && children[children.length-1]}
+              </div>
+              {
+                signature && (
+                  <div style={{ display: 'flex', marginTop: 20, justifyContent: 'center' }}>
+                    <p style={{ fontSize: 8, fontFamily: 'Arial, Helvetica, sans-serif' }}>Powered by</p>
+                    <a href={href} target='_blank' rel='noopener noreferrer'><p style={{ fontSize: 8, fontFamily: 'Arial, Helvetica, sans-serif', marginLeft: 2 }}>MailBerry</p></a>
+                  </div>
+                )
+              }
+          </div>
         )
       }
 
