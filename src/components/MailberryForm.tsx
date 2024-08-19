@@ -22,6 +22,7 @@ type ContextProps = {
 export const FormContext = createContext({} as ContextProps);
 
 const getBaseApiUrl = () => {
+  return 'https://backend.mailberry.ai/public';
   if (process.env.NODE_ENV === 'production') {
     return 'https://backend.mailberry.ai/public';
   } else if (process.env.NODE_ENV === 'staging') {
