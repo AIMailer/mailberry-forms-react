@@ -24,7 +24,7 @@ export const FormContext = createContext({} as ContextProps);
 const getBaseApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
     return 'https://backend.mailberry.ai/public';
-  }else if (process.env.NODE_ENV === 'staging') {
+  } else if (process.env.NODE_ENV === 'staging') {
     return 'https://y4xtgbmdcf.execute-api.us-west-1.amazonaws.com/production/public';
   }
 
@@ -40,6 +40,7 @@ type MailberryFormProps = {
     container?: React.CSSProperties;
     wrapper?: React.CSSProperties;
     form?: React.CSSProperties;
+    statusMessage?: React.CSSProperties;
   };
   showAt?: PopUpFormShowAt;
   children: React.ReactNode | React.ReactNode[];
@@ -59,6 +60,20 @@ interface MailberryFormComponents {
 
 const MailberryForm: React.FC<MailberryFormProps> & MailberryFormComponents = ({ formId, signature = true, thanksMessage, format, showAt, formStyles = {}, children }): React.ReactNode => {
   const href = `${getBaseApiUrl()}/${formId}`;
+
+  const animations = `
+    @keyframes MBspin-animation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  `;
+
+  const styleSheet = document.styleSheets[0];
+  styleSheet.insertRule(animations, styleSheet.cssRules.length);
 
   const [fields, setFields] = useState<FieldType[]>([]);
   const [emptyFields, setEmptyFields] = useState(false);

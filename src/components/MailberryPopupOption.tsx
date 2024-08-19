@@ -13,6 +13,7 @@ type MailberryFormPopupProps = {
     container?: React.CSSProperties;
     wrapper?: React.CSSProperties;
     form?: React.CSSProperties;
+    statusMessage?: React.CSSProperties;
   };
   children: React.ReactNode;
   showAt?: PopUpFormShowAt;

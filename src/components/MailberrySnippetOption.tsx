@@ -10,6 +10,7 @@ type MailberrySnippetProps = {
     container?: React.CSSProperties;
     wrapper?: React.CSSProperties;
     form?: React.CSSProperties;
+    statusMessage?: React.CSSProperties;
   };
   children: React.ReactNode;
 }
@@ -22,8 +23,7 @@ const defaultFormContainerStyles: React.CSSProperties = {
 
 const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, formStyles, children }: MailberrySnippetProps) => {
   const { isSubmitted, isSubmitting, showErrorMessage, showThanksMessage } = useContext(FormContext);
-  const { container: containerStyle, wrapper: wrapperStyle, form: formStyle } = formStyles
-
+  const { container: containerStyle, wrapper: wrapperStyle, form: formStyle, statusMessage: statusMessageStyle } = formStyles;
   // Every time this component is rendered, we send a request to register that the form was viewed
   useEffect(() => {
     fetch(href)
@@ -34,7 +34,7 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
       {/* Spinner */}
       {
         isSubmitting && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ width: 20, height: 20, borderRadius: '50%', border: '4px solid #ccc', borderTopColor: '#999999', animation: 'MBspin-animation 1s linear infinite' }}></div>
           </div>
         ) 
@@ -65,7 +65,7 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
       {/* Thank you message */}
       {
         showThanksMessage && 
-          <div style={{ paddingBottom: 20 }}>
+          <div style={statusMessageStyle}>
             <p style={{ margin: 10, textAlign: 'center' }}>{thanksMessage}</p>
           </div>
       }
@@ -73,7 +73,7 @@ const MailberryFormSnippet = ({ href, signature, thanksMessage, handleSubmit, fo
       {/* Error message */}
       {
         showErrorMessage && (
-          <div style={{ paddingBottom: 20 }}>
+          <div style={statusMessageStyle}>
             <p style={{ margin: 10, textAlign: 'center' }}>Something went wrong.</p>
           </div>
         )
